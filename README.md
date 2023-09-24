@@ -1,5 +1,6 @@
 # NSI1
 projet 1 Imane et Alis
+
 1- Créez une classe Personnage qui contiendra à minima (vous pourrez ajouter ensuite autant d’attributs que vous voudrez si vous en avez besoin) les attributs suivants dans son constructeur :
 
 Un nom : chaine de caractères
