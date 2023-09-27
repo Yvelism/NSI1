@@ -22,9 +22,9 @@ class perso:
         print(self.force)
     def set_name(self,nn):
         self.name=nn
-    def set_positionx(self,npx):
+    def set_positionx(self,npx): #changer la valeur de x pas de la liste entière
         self.position[0]=npx
-    def set_positiony(self,npy):
+    def set_positiony(self,npy): # pareil pour y, permet de changer leurs valeurs indépendamment 
         self.position[1]=npy
     def set_image(self,ni):
         self.image=ni
