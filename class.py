@@ -1,12 +1,13 @@
 #import pygame
 class perso:
-    def _init_(self, name, image, pv_init, pv_courant, force, position=(0,0)):
+    def _init_(self, name, image, pv_init, pv_courant, forceinit, force, position=(0,0)):
         self.name=name #type==str
         self.position= position #type==tuple (x,y)
         self.image=image #adresse du chemin d'accès type==str
         self.pv_init=pv_init
         self.pv_courant=pv_courant
-        self.force=force  #type==int pour les 3   
+        self.forceinit=forceinit  #type==int pour les 3   
+        self.forcecourante=force #force au début et à la fin de la partie
 
     def get_name(self):
         print(self.name)
@@ -65,7 +66,9 @@ class perso:
     def gauche(self):
         self.position[0]-=10
 
-    
+    def reset(self):
+        self.pv_courant=self.pv_init
+        self.forcecourante=self.forceinit
 
     
 class items:
@@ -88,13 +91,17 @@ class items:
     def malusforce(self,perso):
         perso.set_force(perso.get_force+self.forceinf)
 
-objet1=items((10,43),20,0,0,0)
-objet2=items((20,78),0,0,0,24)
+objet1=items(20,0,0,0)
+objet2=items(0,0,0,24,(56,58))
 
 
     
-class arène:
+class arene:
     def _init_(self,background,platform,sound):
         self.background=background #image
         self.platform=platform #liste de plateforme
         self.sound=sound #bande son attitrée
+        
+        
+liste1=[[50,26],[52,26]]
+arene1=arene('adresseimage',liste)
