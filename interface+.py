@@ -87,7 +87,7 @@ def ecran_accueil():
     bouton_start = pygame.Rect(320, 200, 200, 50) #coordonnées en x, coordonnées en y, largeur, hauteur
 
     #Définition d'une instance de menu déroulant qui servira à choisir l'arene du jeu
-    #Ímenu = MenuDeroulant(100, 200, 200, 30, arenes)
+    menu = MenuDeroulant(100, 200, 200, 30, arenes)
 
     #Boucle infinie de la page d'accueil (obligatoire car l'affichage doit se faire en continu)
     while True:
