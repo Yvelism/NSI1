@@ -211,14 +211,14 @@ def jeu(arene): # création de ce qui s'affiche après l'accueil
                     pos_brute2 = (600, 300)
                     tour_personnage = 3 - tour_personnage
 
-
+        #indépendamment de ce que fait le joueur :
         #Affichage des noms des personnages
         ecran.blit(nom1, (100, 500))
         ecran.blit(nom2,(600,500))
 
         #Affichage des pv des personnages
             #Création de la chaine de caractère
-        pv1= str(pv_courant1)+"/"+str(pv_inital1)
+        pv1= str(pv_courant1)+"/"+str(pv_inital1)#transformation du nombre de pv en chaine de caractères pour l'afficher
         pv2= str(pv_courant2)+"/"+str(pv_inital2)
             #Création du texte
         texte_pv1 = police.render(pv1, True, couleur_pv)
@@ -229,14 +229,14 @@ def jeu(arene): # création de ce qui s'affiche après l'accueil
 
         #Affichage des barres de vie des personnages
             #Calcul de la largeur de la barre en pourcentage par rapport à son nombre de pv
-        largeur_barre_actuelle1 = (pv_courant1/ 100) * largeur_barre_max
-        largeur_barre_actuelle2 = (pv_courant2/ 100) * largeur_barre_max
+        largeur_barre_actuelle1 = (pv_courant1/ 100) * largeur_barre_max #produit en croix pour que la barre se vide proportionnellement au nb de pv perdus
+        largeur_barre_actuelle2 = (pv_courant2/ 100) * largeur_barre_max # les 2 s'actualisent toujours (boucle infinie)
             #Affichage du rectangle de barre de vie à l'écran
         pygame.draw.rect(ecran, couleur_barre, (x_barre1, y_barre1, largeur_barre_actuelle1, hauteur_barre))
         pygame.draw.rect(ecran, couleur_barre, (x_barre2, y_barre2, largeur_barre_actuelle2, hauteur_barre))
 
         #Lorsque l'un des deux personnages a ses pv égaux ou inférieurs à 0 alors le jeu s'arrête
-        if pv_courant1 <= 0 or pv_courant2<=0:
+        if pv_courant1 <= 0 or pv_courant2<=0: #condition d'arrêt de jeu
                  continuer = False
 
         #Actualisation de la fenêtre (obligatoire c'est ce qui actualise l'affichage de la fenêtre)
@@ -378,7 +378,8 @@ class arene:
         self.platform=platform #liste de plateforme
         self.sound=sound #bande son attitrée
         
-ecran_accueil()
+ecran_accueil() #on lance l'écran d'accueil qui lancera le jeu qui s'éteindra lorsqu'un des perso est KO
 
 #Fermeture du module pygame à la fin du programme
 pygame.quit()
+
