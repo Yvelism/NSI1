@@ -21,10 +21,12 @@ couleur_barre = (0, 255, 0) # vert
 couleur_bouton = (0, 0, 255) # bleu
 couleur_menu = (0,0,255) # bleu
 
+# on créer toutes les variables dont on aura besoin plus tard
+
 
 class MenuDeroulant:
     # Constructeur de la classe
-    def __init__(self, x, y, largeur, hauteur, options):
+    def __init__(self, x, y, largeur, hauteur, options): #defifinition de la classe pour pouvoir créer des menus déroulants 
         self.rect = pygame.Rect(x, y, largeur, hauteur) # On crée un rectangle aux coordonnées (x,y)
         self.options = options # Liste de chaines de caractère contenant les options disponibles
         self.ouvert = False  # Le menu déroulant est fermé initialement
@@ -34,15 +36,15 @@ class MenuDeroulant:
     # Méthode permettant d'afficher le menu à l'écran
     def afficher(self, ecran):
         #Affichage du rectangle de couleur de la taille et des coordonnées définie dans l'attribut rect
-        pygame.draw.rect(ecran, couleur_menu, self.rect)
+        pygame.draw.rect(ecran, couleur_menu, self.rect) # fonction inclue dans pygame qui affiche le rectangle
         #Récupération du titre dans l'attribut titre et création du texte
-        texte_menu = police.render(self.titre, True, couleur_texte)
+        texte_menu = police.render(self.titre, True, couleur_texte) 
         #Affichage du texte aux mêmes coordonnées que le rectangle + 10 (permet de le centrer)
         ecran.blit(texte_menu, (self.rect.x + 10, self.rect.y + 10))
 
         #Si le menu est ouvert (donc si l'utilisateur a cliqué dessus)
-        if self.ouvert:
-            for i in range(len(self.options)):
+        if self.ouvert: #donc si == True
+            for i in range(len(self.options)): # pour le nombre d'options qu'on a mis
                 y_offset = (i + 1) * 30  # Espacement vertical entre les options
                 #On construit un rectangle espacé avec le bon décalage et de taille 30
                 option_rect = pygame.Rect(self.rect.x, self.rect.y + y_offset, self.rect.width, 30)
@@ -50,24 +52,24 @@ class MenuDeroulant:
                 pygame.draw.rect(ecran, couleur_menu, option_rect)
                 #On crée le texte affiché sur le rectangle d'option
                 texte_option = police.render(self.options[i], True, couleur_texte)
-                #On affiche le texte aux même coordonnées que le rectangle + 10
+                #On affiche le texte aux même coordonnées que le rectangle + 10 pour centrer le texte
                 ecran.blit(texte_option, (option_rect.x + 10, option_rect.y + 10))
 
     # Méthode qui détecte le clic sur le menu et va l'ouvrir pour afficher les options
     def gerer_clic(self, event):
         #Détection du clic sur le menu déroulant
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.rect.collidepoint(event.pos):
+        if event.type == pygame.MOUSEBUTTONDOWN:# event.type c'est le type d'action que fait le joueur et pygame.M... c'est l'action de cliquer
+            if self.rect.collidepoint(event.pos): # si le clic est sur le rectangle de base (menu fermé)
                 #Si le menu est ouvert, il le ferme alors que s'il est fermé il l'ouvre
-                self.ouvert = not self.ouvert
+                self.ouvert = not self.ouvert#le not permet de faire l'inverse 
             #Si le menu est ouvert
             elif self.ouvert:
-                for i in range(len(self.options)):
+                for i in range(len(self.options)): #on parcours chaque options du menu
                     #Recalcul des positions des rectangles d'options
                     y_offset = (i + 1) * 30
                     option_rect = pygame.Rect(self.rect.x, self.rect.y + y_offset, self.rect.width, 30)
                     #Détection du clic sur la position d'un des rectangles d'options
-                    if option_rect.collidepoint(event.pos):
+                    if option_rect.collidepoint(event.pos): # si le clic est sur une l' options du menu
                         #Affectation de l'option sélectionnée dans l'attribut sélection
                         self.selection = self.options[i]
                         #Fermeture du menu déroulant
@@ -78,7 +80,7 @@ class MenuDeroulant:
 
 
 
-def ecran_accueil():
+def ecran_accueil(): # première page du jeux 
     #Chargement, redimension de l'image de fond de l'écran d'accueil
     fond_accueil = pygame.image.load("images/accueil.png").convert()
     fond_accueil = pygame.transform.scale(fond_accueil, (largeur, hauteur))
