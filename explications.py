@@ -21,6 +21,25 @@ couleur_barre = (0, 255, 0) # vert
 couleur_bouton = (0, 0, 255) # bleu
 couleur_menu = (0,0,255) # bleu
 
+
+
+#### Paramètres sonores ####
+
+# Chargement et lancement d'une musique de fond (-1 pour la mettre en continu)
+pygame.mixer.music.load('musiques/fond.mp3')
+pygame.mixer.music.play(-1)
+
+#### Paramètres du jeu ###
+# Le tour de jeu commencera par le personnage 1
+tour_personnage = 1
+
+# Largeur et hauteur de la barre de vie
+largeur_barre_max = 100  # Largeur maximale de la barre de vie
+hauteur_barre = 20  # Hauteur de la barre de vie
+
+# Liste des arènes disponibles
+arenes = ["ciel", "foret", "grotte","ring"] 
+
 # on créer toutes les variables dont on aura besoin plus tard
 
 
@@ -82,14 +101,14 @@ class MenuDeroulant:
 
 def ecran_accueil(): # première page du jeux 
     #Chargement, redimension de l'image de fond de l'écran d'accueil
-    fond_accueil = pygame.image.load("images/accueil.png").convert()
-    fond_accueil = pygame.transform.scale(fond_accueil, (largeur, hauteur))
+    fond_accueil = pygame.image.load("images/accueil.png").convert() #on importe l'image
+    fond_accueil = pygame.transform.scale(fond_accueil, (largeur, hauteur)) #on la met à la bonne taille, larg et haut definie au debut du code
 
-    #Définition du bouton start qui servira à lancer le jeu
+    #Définition du bouton start qui servira à lancer le jeu, on ne l'affiche pas encore
     bouton_start = pygame.Rect(320, 200, 200, 50) #coordonnées en x, coordonnées en y, largeur, hauteur
 
-    #Définition d'une instance de menu déroulant qui servira à choisir l'arene du jeu
-    menu = MenuDeroulant(100, 200, 200, 30, arenes)
+    #Définition d'une instance de menu déroulant qui servira à choisir l'arene du jeu on créerun menu
+    menu = MenuDeroulant(100, 200, 200, 30, arenes)#les options sont dans la liste arenes definit au début
 
     #Boucle infinie de la page d'accueil (obligatoire car l'affichage doit se faire en continu)
     while True:
@@ -97,20 +116,20 @@ def ecran_accueil(): # première page du jeux
         #ce qu'on affichera ensuite va venir se superposer par dessus
 
         #Affichage du fond d'écran
-        ecran.blit(fond_accueil, (0, 0))
+        ecran.blit(fond_accueil, (0, 0)) #fonction d'affichage pygame
 
         #Affichage du rectangle du bouton start
-        pygame.draw.rect(ecran, couleur_bouton, bouton_start)
+        pygame.draw.rect(ecran, couleur_bouton, bouton_start)#on affiche le rectangle avec les valeurs définits au dessus
 
         #Affichage du texte du bouton start
         texte_start = police.render("Start", True, couleur_texte)
-        ecran.blit(texte_start, (390, 215))
+        ecran.blit(texte_start, (390, 215))#coordonées auquelles le placer
 
         #Affichage du menu déroulant des arènes
-        menu.afficher(ecran)
+        menu.afficher(ecran)#on utilise la méthode de la classe menu_deroulant
 
         #Récupération de tous les évènements captés par la fenêtre
-        for event in pygame.event.get():
+        for event in pygame.event.get(): # pour chaque actions du joueur
 
             #Si l'utilisateur a cliqué sur la croix
             if event.type == pygame.QUIT:
@@ -123,47 +142,47 @@ def ecran_accueil(): # première page du jeux
                 if bouton_start.collidepoint(event.pos):
                     #On lance le jeu avec comme paramètre l'arêne qui a été choisie
                     return jeu(menu.selection)
-
+                #ici on pourra rajouter des conditions de lancements en mode "si il a cliquer sur changer de perso"...
             #Lancement de la méthode gérer clic qui va capter les évènement de clic sur les options du menu
-            menu.gerer_clic(event)
+            menu.gerer_clic(event) #si il n'a pas cliquer sur start on lance la methode de classe pour gérer son action
 
         #Actualisation de la fenêtre (obligatoire c'est ce qui actualise l'affichage de la fenêtre)
-        pygame.display.flip()
+        pygame.display.flip() # je sais pas ce que c'est mais faut pas l'oublier
         
         
         
         
         
         
-def jeu(arene):
+def jeu(arene): # création de ce qui s'affiche après l'accueil
     #On précise que ce sont des variables globales et pas locales à la fonction pour éviter les erreurs d'interprêtation
-    global pos_brute1,pos_brute2, pv_courant1, pv_courant2, tour_personnage
+    global pos_brute1,pos_brute2, pv_courant1, pv_courant2, tour_personnage #global permet de rendre les variables utilisables pour toutes les fonctions pas que celle là
 
 
-    #Boucle infinie du programme
+    #Boucle infinie du programme comme dans accueil
     continuer = True
-    while continuer:
+    while continuer: # c'est a dire toujours
 
         #Chargement et redimension de l'image de fond d'écran dont le nom est passé en paramètre
-        fond = pygame.image.load("images/"+arene+".jpg").convert()
-        fond = pygame.transform.scale(fond, (largeur, hauteur))
+        fond = pygame.image.load("images/"+arene+".jpg").convert() #le +arene permet de charger la bonne image correspondante
+        fond = pygame.transform.scale(fond, (largeur, hauteur))# meme chose que plus haut on redimensionne pour que ca rentre dans la fenetre
 
         #Affichage de l'image de fond
         ecran.blit(fond, (0, 0))
         #Affichage des personnages
-        ecran.blit(brute1, pos_brute1)
+        ecran.blit(brute1, pos_brute1) #les position devront venir de nos persos directement avec get_position()
         ecran.blit(brute2, pos_brute2)
-
+        #dans le blit tu mets : ce que tu affiches, où est-ce que tu l'affiche
         #Récupération de tous les évènements captés par la fenêtre
-        for event in pygame.event.get():
+        for event in pygame.event.get(): #pour chaque actions
             #Si l'utilisateur a cliqué sur la croix
             if event.type == pygame.QUIT:
                 #Fin de la boucle infinie et le programme se termine
                 continuer = False
-            # Si c'est au personnage 1 de jouer et que l'utilisateur a tapé sur une touche
-            if tour_personnage == 1 and event.type == pygame.KEYDOWN:
+            # Si c'est au personnage 1 de jouer et que l'utilisateur a tapé sur une touche (le tour du perso est défini à 1 au debut)
+            if tour_personnage == 1 and event.type == pygame.KEYDOWN: #n'importe quelle touche
                 # Si la touche était la barre d'espace
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_SPACE:  
                     # Le personnage 1 attaque le personnage 2, cela réduit les pv du personnage 2 de 20
                     pv_courant2 -= 20
 
@@ -176,9 +195,9 @@ def jeu(arene):
                     ecran.blit(brute2, pos_brute2)
                     #Re-déplacement du personnage 1 à sa position initiale
                     pos_brute1 = (100, 300)
-
+                    #à remplacer par nos méthode de classe perso , attaquer et est_attaqué
                     #Le tour passe au prochain personnage
-                    tour_personnage = 3 - tour_personnage
+                    tour_personnage = 3 - tour_personnage#soit 3-1=2 soit 3-2=1
 
 
             #Même chose pour le personnage 2
@@ -254,6 +273,7 @@ pv_courant2=240
 x_barre2=600
 y_barre2=550
 
+# tout ces paramètres de perso doivent disparaitre pour être rangés dans la classe perso qu'on a créer
 
 brute2=perso("luigi","images/brute2.png", 250,240,500,500,(600,550))
 
