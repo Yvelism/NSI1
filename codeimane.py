@@ -38,9 +38,10 @@ largeur_barre_max = 100  # Largeur maximale de la barre de vie
 hauteur_barre = 20  # Hauteur de la barre de vie
 
 # Liste des arènes disponibles
-arenes = ["ciel", "foret", "grotte","ring"] 
+arenes = ["Champ de bataille", "Place Delfino", "Pont Ordinn"]
 
-class perso:
+
+class Perso:
     
     def __init__(self, name, image, pv_init, pv_courant, forceinit, force, position=(0,0)):
         self.name=name #type==str
@@ -113,20 +114,20 @@ class perso:
         self.pv_courant=self.pv_init
         self.forcecourante=self.forceinit
 
-pit=perso("Pit","images/pit.png", 250,240,500,500, (600,300))
-mario1=perso("Mario","images/mario1.png", 250, 120, 500, 500, (100,300))     
-ike = perso("Ike","image/ike.png",250, 20, 500, 500, (50,300))
+pit=Perso("Pit","images/pit.png", 250,240,500,500, (600,300))
+mario=Perso("Mario","images/mario.png", 250, 120, 500, 500, (100,300))     
+ike = Perso("Ike","images/ike.png",250, 20, 500, 500, (50,300))
 
-liste_perso = [pit.name,mario1.name,ike.name]
+liste_perso = [pit.name,mario.name,ike.name]
 
-pos_mario1=mario1.get_position()
 pos_pit=pit.get_position()
+pos_mario=mario.get_position()
 pos_ike=ike.get_position()
 
 #liste des persos disponibles 
-chperso1=[mario1,pit,ike]
-chperso2=[mario1,pit,ike]
-chperso3=[mario1,pit,ike]
+chperso1=[mario,pit,ike]
+chperso2=[mario,pit,ike]
+chperso3=[mario,pit,ike]
 
 class MenuDeroulant:
     # Constructeur de la classe
@@ -198,14 +199,16 @@ def ecran_accueil():
 
     #Définition du bouton start qui servira à lancer le jeu
     bouton_start = pygame.Rect(320, 110, 200, 50) #coordonnées en x, coordonnées en y, largeur, hauteur
-
+    #Définition du bouton quitter qui servira à quitter le jeu
+    bouton_quitter = pygame.Rect(320, 200, 200, 50)
     #Définition d'une instance de menu déroulant qui servira à choisir l'arene du jeu
     menu = MenuDeroulant(320, 400, 200, 40, arenes, "Choisir une arène", "ciel")
     #menus de choix des persos pour les joueurs 1 et 2
-    choixperso1 =MenuDeroulant(50, 450, 200, 40, liste_perso, "Choisir un perso", "mario1")
+    choixperso1 =MenuDeroulant(50, 450, 200, 40, liste_perso, "Choisir un perso", "mario")
     choixperso2 =MenuDeroulant(600, 450, 200, 40, liste_perso, "Choisir un perso", "pit")
     #Boucle infinie de la page d'accueil (obligatoire car l'affichage doit se faire en continu)
-    while True:
+    continuer = True 
+    while continuer:
         #Attention !: Il faut afficher en premier ce qui sera tout en dessous puis
         #ce qu'on affichera ensuite va venir se superposer par dessus
 
@@ -214,10 +217,13 @@ def ecran_accueil():
 
         #Affichage du rectangle du bouton start
         pygame.draw.rect(ecran, couleur_bouton, bouton_start)
-
+        pygame.draw.rect(ecran, couleur_bouton, bouton_quitter)
         #Affichage du texte du bouton start
         texte_start = police.render("Start", True, couleur1)
         ecran.blit(texte_start, (390, 125))
+        #Affichage du texte du bouton quitter
+        texte_quitter = police.render("Quitter", True, couleur1)
+        ecran.blit(texte_quitter, (385, 215))
         #affichage du texte du choix des persos
         txt_p1=police.render("Joueur 1", True, couleur1)
         txt_p2=police.render("Joueur 2", True, couleur1)
@@ -243,8 +249,12 @@ def ecran_accueil():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 #Si le clic a été fait à la position du bouton_start
                 if bouton_start.collidepoint(event.pos):
-                    #On lance le jeu avec comme paramètre l'arêne qui a été choisie
+                    #On lance le jeu avec comme paramètre l'arène qui a été choisie
                     return jeu(menu.selection, choixperso1.selection, choixperso2.selection)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                #Si le clic a été fait à la position du bouton_quitter
+                if bouton_quitter.collidepoint(event.pos):
+                    continuer = False
             #Lancement de la méthode gérer clic qui va capter les évènement de clic sur les options des menus
             menu.gerer_clic(event)
             choixperso1.gerer_clic(event)
@@ -256,13 +266,11 @@ def ecran_accueil():
         pygame.display.flip()
         
 
-        
-        
-def jeu(arene, p1, p2):
+def jeu(arene, choixperso1,choixperso2):
     #On précise que ce sont des variables globales et pas locales à la fonction pour éviter les erreurs d'interprêtation
     global tour_personnage
-    pos_p1 = p1.get_position()
-    pos_p2 = p2.get_position()
+    pos_p1 = choixperso1.get_position()
+    pos_p2 = choixperso2.get_position()
     #Boucle infinie du programme
     continuer = True
     while continuer:
@@ -274,8 +282,8 @@ def jeu(arene, p1, p2):
         #Affichage de l'image de fond
         ecran.blit(fond, (0, 0))
         #Affichage des personnages
-        ecran.blit(p1, pos_p1)
-        ecran.blit(p2, pos_p2)
+        ecran.blit(choixperso1, pos_p1)
+        ecran.blit(choixperso2, pos_p2)
 
         #Récupération de tous les évènements captés par la fenêtre
         for event in pygame.event.get():
@@ -288,15 +296,15 @@ def jeu(arene, p1, p2):
                 # Si la touche était la barre d'espace
                 if event.key == pygame.K_SPACE:
                     # Le personnage 1 attaque le personnage 2, cela réduit les pv du personnage 2 de 20
-                    p1.frappe(p2)
+                    choixperso1.frappe(choixperso2)
 
                     #Déplacement de l'image du personnage 1 vers le personnage 2
                     pos_p1 = (500, 300)
                     #Ré-affichage de l'écran
                     ecran.blit(fond, (0, 0))
                     #Ré-affichage des personnages
-                    ecran.blit(p1, pos_p1)
-                    ecran.blit(p2, pos_p2)
+                    ecran.blit(choixperso1, pos_p1)
+                    ecran.blit(choixperso2, pos_p2)
                     #Re-déplacement du personnage 1 à sa position initiale
                     pos_p1 = (100, 300)
 
@@ -307,23 +315,23 @@ def jeu(arene, p1, p2):
             #Même chose pour le personnage 2
             elif tour_personnage == 2 and event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    p2.frappe(p1)
+                    choixperso2.frappe(choixperso1)
                     pos_p2 = (200, 300)
                     ecran.blit(fond, (0, 0))
-                    ecran.blit(p1, pos_p1)
-                    ecran.blit(p2, pos_p2)
+                    ecran.blit(choixperso1, pos_p1)
+                    ecran.blit(choixperso2, pos_p2)
                     pos_p2 = (600, 300)
                     tour_personnage = 3 - tour_personnage
 
 
         #Affichage des noms des personnages
-        ecran.blit(p1.get_nom(), (100, 500))
-        ecran.blit(p2.get_nom(),(600,500))
+        ecran.blit(choixperso1.get_nom(), (100, 500))
+        ecran.blit(choixperso2.get_nom(),(600,500))
 
         #Affichage des pv des personnages
             #Création de la chaine de caractère
-        pv1= str(p1.get_pv_courant())+"/"+str(p1.get_pv_init())
-        pv2= str(p2.get_pv_courant())+"/"+str(p2.get_pv_init())
+        pv1= str(choixperso1.get_pv_courant())+"/"+str(choixperso1.get_pv_init())
+        pv2= str(choixperso2.get_pv_courant())+"/"+str(choixperso2.get_pv_init())
             #Création du texte
         texte_pv1 = police.render(pv1, True, couleur_pv)
         texte_pv2 = police.render(pv2, True, couleur_pv)
@@ -333,18 +341,56 @@ def jeu(arene, p1, p2):
 
         #Affichage des barres de vie des personnages
             #Calcul de la largeur de la barre en pourcentage par rapport à son nombre de pv
-        largeur_barre_actuelle1 = (p1.get_pv_courant()/ 100) * largeur_barre_max
-        largeur_barre_actuelle2 = (p2.get_pv_courant()/ 100) * largeur_barre_max
+        largeur_barre_actuelle1 = (choixperso1.get_pv_courant()/ 100) * largeur_barre_max
+        largeur_barre_actuelle2 = (choixperso2.get_pv_courant()/ 100) * largeur_barre_max
             #Affichage du rectangle de barre de vie à l'écran
         pygame.draw.rect(ecran, couleur_barre, (x_barre1, y_barre1, largeur_barre_actuelle1, hauteur_barre))
         pygame.draw.rect(ecran, couleur_barre, (x_barre2, y_barre2, largeur_barre_actuelle2, hauteur_barre))
 
         #Lorsque l'un des deux personnages a ses pv égaux ou inférieurs à 0 alors le jeu s'arrête
-        if p1.get_pv_courant() <= 0 or p2.get_pv_courant()<=0:
+        if choixperso1.get_pv_courant() <= 0 or choixperso2.get_pv_courant()<=0:
                  continuer = False
 
         #Actualisation de la fenêtre (obligatoire c'est ce qui actualise l'affichage de la fenêtre)
         pygame.display.flip()
+
+def ecran_fin(choixperso1,choixperso2):
+    #Chargement, redimension de l'image de fond de l'écran d'accueil
+    fond_fin = pygame.image.load("images/fond_pagef.jpg").convert()
+    fond_fin = pygame.transform.scale(fond_fin, (largeur, hauteur))
+
+    #Définition du bouton start qui servira à lancer le jeu
+    bouton_start = pygame.Rect(450, 110, 200, 50) #coordonnées en x, coordonnées en y, largeur, hauteur
+    #Définition du bouton quitter qui servira à quitter le jeu
+    bouton_quitter = pygame.Rect(525, 200, 200, 50)
+    #Boucle infinie de la page d'accueil (obligatoire car l'affichage doit se faire en continu)
+    continuer = True 
+    while continuer:
+        #Attention !: Il faut afficher en premier ce qui sera tout en dessous puis
+        #ce qu'on affichera ensuite va venir se superposer par dessus
+
+        #Affichage du fond d'écran
+        ecran.blit(fond_fin, (0, 0))
+
+        #Affichage du rectangle du bouton start
+        pygame.draw.rect(ecran, couleur_bouton, bouton_start)
+        pygame.draw.rect(ecran, couleur_bouton, bouton_quitter)
+        #Affichage du texte du bouton start
+        texte_start = police.render("Start", True, couleur1)
+        ecran.blit(texte_start, (50, 15))
+        #Affichage du texte du bouton quitter
+        texte_quitter = police.render("Quitter", True, couleur1)
+        ecran.blit(texte_quitter, (0, 0))
+        #variable du texte du gagnant
+        txt_p1=police.render("Joueur 1 à Gagné", True, couleur1)
+        txt_p2=police.render("Joueur 2 à Gagné", True, couleur1)
+        #affichage du gagnant
+        if choixperso1.get_pv_courant()<= 0 :
+            continuer = False
+            ecran.blit(txt_p1, (425,300))
+        if choixperso2.get_pv_courant()<= 0 :
+            continuer = False
+            ecran.blit(txt_p2, (425,300))
 
 
 
@@ -352,11 +398,11 @@ def jeu(arene, p1, p2):
         
         
 #Chargement de l'image en conservant la transparence grâce au convert_alpha (il faut utiliser des .png)
-mario1 = pygame.image.load("images/mario1.png").convert_alpha()
+mario = pygame.image.load("images/mario.png").convert_alpha()
 #Redimension de l'image
-mario1 = pygame.transform.scale(mario1, (150, 150))
-nom_mario1 = "Mario"
-nom1 = police.render(nom_mario1, True, couleur1)
+mario = pygame.transform.scale(mario, (150, 150))
+nom_mario = "Mario"
+nom1 = police.render(nom_mario, True, couleur1)
 x_barre1 = 100
 y_barre1 = 550
 
